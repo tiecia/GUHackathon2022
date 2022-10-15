@@ -26,12 +26,11 @@ public class HapticManager {
     /**
      * If the user has enabled haptic feedback in the system settings, return true, otherwise return
      * false.
-     * 
-     * @param context The context of the application.
+     *
      * @return The value of the setting for haptic feedback.
      */
-    public static boolean hapticEnabled(Context context) {
-        int enabled = Settings.System.getInt(context.getContentResolver(),
+    public boolean hapticEnabled() {
+        int enabled = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.HAPTIC_FEEDBACK_ENABLED, 0);
         return enabled != 0;
     }
