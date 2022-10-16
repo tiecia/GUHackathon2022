@@ -128,9 +128,12 @@ public class MainActivity extends Activity {
         String[] times = time.split(":");
         int hour = Integer.valueOf(times[0]);
         int min = Integer.valueOf(times[1]);
-        if(min < 10) {
+        if(min < 10 && hour >= 1) {
             min = (60 + min) - 10;
             hour --;
+        } else if(hour < 1 && min < 10) {
+            min = 50;
+            hour = 99;
         } else {
             min -= 10;
         }
@@ -143,6 +146,9 @@ public class MainActivity extends Activity {
         int min = Integer.valueOf(times[1]);
         if(min >= 50) {
             min = (min - 60) + 10;
+        } else if(hour >= 99 && min >= 50) {
+            hour = 0;
+            min = 0;
         } else {
             min += 10;
         }
