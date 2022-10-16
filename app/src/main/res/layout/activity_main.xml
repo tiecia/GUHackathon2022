@@ -45,7 +45,7 @@
             android:layout_marginTop="20dp"
             android:layout_weight="1"
             android:gravity="bottom"
-            android:text="11:20"
+            android:text="10:00"
             android:textAlignment="center"
             android:textSize="10dp"/>
 
@@ -59,14 +59,14 @@
             android:layout_marginLeft="90px">
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/subTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="-" />
 
             <Button
-                android:id="@+id/button4"
+                android:id="@+id/addTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
