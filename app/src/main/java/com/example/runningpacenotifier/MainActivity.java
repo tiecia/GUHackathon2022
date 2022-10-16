@@ -10,6 +10,10 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.runningpacenotifier.databinding.ActivityMainBinding;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -36,12 +40,22 @@ public class MainActivity extends Activity {
 
     private int MARGIN_CHANGE = 80;
 
+
+    private LocationService locationService;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+
+    protected GoogleApiClient googleApiClient;
+    protected LocationRequest locationRequest;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        locationService = new LocationService(this, this, fusedLocationProviderClient);
 
         timeView = binding.timeOfDay;
         currentPaceView = binding.currentPace;
@@ -69,8 +83,8 @@ public class MainActivity extends Activity {
 
                 int newSize = scale(scrollY, SCROLL_TOP, SCROLL_BOTTOM, MIN_TARGET_SIZE, MAX_TARGET_SIZE);
                 int newTopMargin = scale(scrollY, SCROLL_TOP, SCROLL_BOTTOM, 0, MARGIN_CHANGE);
-                System.out.println("ScrollHeight: " + SCROLL_BOTTOM);
-                System.out.println("NewSize: " + newSize);
+//                System.out.println("ScrollHeight: " + SCROLL_BOTTOM);
+//                System.out.println("NewSize: " + newSize);
                 targetPaceView.setTextSize(newSize);
 
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -78,8 +92,9 @@ public class MainActivity extends Activity {
                 targetPaceView.setLayoutParams(params);
             }
         });
-
     }
+
+
 
     private String getFormattedDisplayTime() {
         Calendar calendar = new GregorianCalendar(GregorianCalendar.getInstance().getTimeZone());
