@@ -90,6 +90,7 @@ public class LocationService implements LocationListener {
                 Consumer<Location> consumer = new Consumer<Location>() {
                     @Override
                     public void accept(Location location) {
+                        System.out.println("Location Update");
                         printLocation(location);
                     }
                 };
@@ -108,8 +109,12 @@ public class LocationService implements LocationListener {
      * @param pace the pace to convert
      * @return the new pace
      */
-    private double convertPace(double pace) {
-        return 26.332 / pace;
+    public String convertPace(double pace) {
+        double temp = 26.332 / pace;
+        double floor = Math.floor(temp);
+        temp -= floor;
+        temp = Math.round(temp * 60);
+        return String.format("%02d", (int)floor) + ":" + String.format("%02d", (int)temp);
     }
 
     private void printLocation(Location location) {
@@ -124,7 +129,7 @@ public class LocationService implements LocationListener {
     @Override
     public void onLocationChanged(@NonNull Location location) {
         locations.add(location);
-        pace = convertPace(location.getSpeed());
+//        pace = convertPace(location.getSpeed());
         System.out.println("Pace: " + pace);
         lastLocation = location;
     }

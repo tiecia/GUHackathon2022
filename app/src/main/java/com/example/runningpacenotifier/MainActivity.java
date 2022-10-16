@@ -1,6 +1,7 @@
 package com.example.runningpacenotifier;
 
 import android.app.Activity;
+import android.app.Application;
 import android.os.Bundle;
 import android.text.Layout;
 import android.view.View;
@@ -35,6 +36,9 @@ public class MainActivity extends Activity {
     private TimerTask timeChangeTask;
     private Timer timeChangeTimer;
 
+    private TimerTask paceChangeTask;
+    private Timer paceChangeTimer;
+
 
     private int MIN_TARGET_SIZE = 20;
     private int MAX_TARGET_SIZE = 90;
@@ -48,11 +52,12 @@ public class MainActivity extends Activity {
     private LocationService locationService;
     private FusedLocationProviderClient fusedLocationProviderClient;
 
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onResume() {
+//        super.onCreate(savedInstanceState);
 
+        super.onResume();
+        System.out.println("OnResume()");
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -76,11 +81,26 @@ public class MainActivity extends Activity {
             }
         };
 
+        paceChangeTask = new TimerTask() {
+            @Override
+            public void run() {
+//                System.out.println("LastLocation: " + locationService.getLastLocation());
+                if (locationService.getLastLocation() != null) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            currentPaceView.setText(locationService.convertPace(locationService.getLastLocation().getSpeed()));
+                        }
+                    });
+                }
+            }
+        };
+
         addButton.setOnClickListener(new View.OnClickListener() {
-           public void onClick(View v) {
+            public void onClick(View v) {
                 String newTime = addTime((String) binding.targetPace.getText());
                 targetPaceView.setText(newTime);
-           }
+            }
         });
 
         subButton.setOnClickListener(new View.OnClickListener() {
@@ -92,6 +112,9 @@ public class MainActivity extends Activity {
 
         timeChangeTimer = new Timer(true);
         timeChangeTimer.scheduleAtFixedRate(timeChangeTask, 0, 1000);
+
+        paceChangeTimer = new Timer(true);
+        paceChangeTimer.scheduleAtFixedRate(paceChangeTask, 0, 500);
 
         scrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
@@ -106,7 +129,7 @@ public class MainActivity extends Activity {
                 targetPaceView.setTextSize(newSize);
 
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                params.setMargins(0,newTopMargin,0,MARGIN_CHANGE-newTopMargin);
+                params.setMargins(0, newTopMargin, 0, MARGIN_CHANGE - newTopMargin);
                 targetPaceView.setLayoutParams(params);
             }
         });
@@ -146,6 +169,7 @@ public class MainActivity extends Activity {
         int min = Integer.valueOf(times[1]);
         if(min >= 50) {
             min = (min - 60) + 10;
+            hour ++;
         } else if(hour >= 99 && min >= 50) {
             hour = 0;
             min = 0;
