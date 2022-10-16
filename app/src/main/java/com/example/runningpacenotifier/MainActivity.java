@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Layout;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -32,6 +33,9 @@ public class MainActivity extends Activity {
     private TimerTask timeChangeTask;
     private Timer timeChangeTimer;
 
+    private Button addButton;
+    private Button subButton;
+
     private int MIN_TARGET_SIZE = 20;
     private int MAX_TARGET_SIZE = 90;
 
@@ -43,9 +47,6 @@ public class MainActivity extends Activity {
 
     private LocationService locationService;
     private FusedLocationProviderClient fusedLocationProviderClient;
-
-    protected GoogleApiClient googleApiClient;
-    protected LocationRequest locationRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +73,18 @@ public class MainActivity extends Activity {
             }
         };
 
+        addButton.setOnClickListener(new View.OnClickListener() {
+           public void onClick(View v) {
+                String newTime = addTime((String) binding.targetPace.getText());
+           }
+        });
+
+        subButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String newTime = subTime((String) binding.targetPace.getText());
+            }
+        });
+
         timeChangeTimer = new Timer(true);
         timeChangeTimer.scheduleAtFixedRate(timeChangeTask, 0, 1000);
 
@@ -94,7 +107,30 @@ public class MainActivity extends Activity {
         });
     }
 
+    private String subTime(String time) {
+        String[] times = time.split(":");
+        int hour = Integer.valueOf(times[0]);
+        int min = Integer.valueOf(times[1]);
+        if(min < 10) {
+            min = (60 + min) - 10;
+            hour --;
+        } else {
+            min -= 10;
+        }
+        return String.format("%02d", hour) + ":" + String.format("%02d", min);
+    }
 
+    private String addTime(String time) {
+        String[] times = time.split(":");
+        int hour = Integer.valueOf(times[0]);
+        int min = Integer.valueOf(times[1]);
+        if(min >= 50) {
+            min = (min - 60) + 10;
+        } else {
+            min += 10;
+        }
+        return String.format("%02d", hour) + ":" + String.format("%02d", min);
+    }
 
     private String getFormattedDisplayTime() {
         Calendar calendar = new GregorianCalendar(GregorianCalendar.getInstance().getTimeZone());
