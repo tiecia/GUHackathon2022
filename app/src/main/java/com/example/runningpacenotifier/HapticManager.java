@@ -14,6 +14,8 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.provider.Settings;
 
+import java.util.logging.Handler;
+
 public class HapticManager {
     private Context mContext;
     private Vibrator mVibrator;
@@ -45,21 +47,25 @@ public class HapticManager {
     }
 
     /**
-     * Vibrate for 0 milliseconds, then vibrate for 100 milliseconds, then vibrate for 100
-     * milliseconds, then vibrate for 100 milliseconds, then vibrate for 100 milliseconds.
+     * Vibrate for .5 seconds, pause for .5 seconds, then repeat numVibes number of times
+     *
+     * Vibrates rapidly to indicate you need to slow down
      */
-    public void vibrateSlowDown() {
-        if(mVibrator.hasVibrator()) {
-            mVibrator.vibrate(VibrationEffect.createWaveform(new long[] {0, 100, 100, 100, 100}, 1));
+    public void vibrateSlowDown(){
+        int numVibes = 4;
+        for (int i = 0; i < numVibes; i ++) {
+            mVibrator.vibrate(VibrationEffect.createWaveform(new long[] {0, 500, 500}, -1));
         }
     }
 
     /**
      * Vibrate for 1 second, pause for 1 second, vibrate for 1 second, pause for 1 second.
+     *
+     * Vibrates slowly to indicate you need to speed up
      */
     public void vibrateSpeedUp() {
         if(mVibrator.hasVibrator()) {
-            mVibrator.vibrate(VibrationEffect.createWaveform(new long[] {0, 1000, 1000, 1000}, 0));
+            mVibrator.vibrate(VibrationEffect.createOneShot(2500, VibrationEffect.DEFAULT_AMPLITUDE));
         }
     }
 }

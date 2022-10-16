@@ -46,7 +46,7 @@ public class HapticTest {
     @Test
     public void testVibrate2() {
         hapticManager.vibrateSlowDown();
-        assertEquals(true, true);
+//        assertEquals(true, true);
     }
 
     @Test
