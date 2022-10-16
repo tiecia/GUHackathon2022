@@ -57,6 +57,8 @@ public class MainActivity extends Activity {
 //        super.onCreate(savedInstanceState);
 
         super.onResume();
+
+        HapticManager hapticManager = new HapticManager(this);
         System.out.println("OnResume()");
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -89,7 +91,16 @@ public class MainActivity extends Activity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            currentPaceView.setText(locationService.convertPace(locationService.getLastLocation().getSpeed()));
+                            String actualPace = locationService.convertPace(locationService.getLastLocation().getSpeed());
+                            currentPaceView.setText(actualPace);
+
+                            String expectedPace = (String) targetPaceView.getText();
+                            int temp = greaterThan30Diff(expectedPace, actualPace);
+                            if(temp == 1) {
+                                hapticManager.vibrateSlowDown();
+                            } else if (temp == -1) {
+                                hapticManager.vibrateSpeedUp();
+                            }
                         }
                     });
                 }
@@ -133,6 +144,29 @@ public class MainActivity extends Activity {
                 targetPaceView.setLayoutParams(params);
             }
         });
+    }
+
+    private int greaterThan30Diff(String expected, String actual) {
+        String[] times = expected.split(":");
+        int ehour = Integer.valueOf(times[0]);
+        int emin = Integer.valueOf(times[1]);
+        ehour *= 60;
+        emin += ehour;
+
+        times = actual.split(":");
+        int ahour = Integer.valueOf(times[0]);
+        int amin = Integer.valueOf(times[1]);
+
+        ahour *= 60;
+        amin += ahour;
+
+        if (amin < emin - 30) {
+            return -1; // needs to speed up
+        } else if (amin > emin + 30) {
+            return 1; // needs to slow down
+        } else {
+            return 0; // doesn't need to do anything
+        }
     }
 
     @Override
