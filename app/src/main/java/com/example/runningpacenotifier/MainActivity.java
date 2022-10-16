@@ -48,6 +48,7 @@ public class MainActivity extends Activity {
     private LocationService locationService;
     private FusedLocationProviderClient fusedLocationProviderClient;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +108,18 @@ public class MainActivity extends Activity {
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        System.out.println("OnPause()");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.out.println("OnDestroy()");
+    }
+    
     private String subTime(String time) {
         String[] times = time.split(":");
         int hour = Integer.valueOf(times[0]);

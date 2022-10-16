@@ -62,48 +62,24 @@ public class LocationService implements LocationListener {
         this.fusedLocationProviderClient = fusedLocationProviderClient;
 
         locationRequest = new LocationRequest();
-        locationRequest.setInterval(1000);
-        locationRequest.setFastestInterval(1000);
+        locationRequest.setInterval(500);
+        locationRequest.setFastestInterval(500);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         LocationCallback locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(@NonNull LocationResult locationResult) {
                 super.onLocationResult(locationResult);
+                System.out.println("New Location");
+                printLocation(locationResult.getLastLocation());
+                lastLocation = locationResult.getLastLocation();
             }
         };
 
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
 
-
-
-//        LocationRequest request = LocationRequest.create();
-//        request.setInterval(1000);
-//        request.setFastestInterval(1000);
-//        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-//        PendingIntent locationUpdateIntent = PendingIntent.OnFinished() {
-//            @Override
-//            public void onSendFinished(PendingIntent pendingIntent, Intent intent, int resultCode, String resultData, Bundle resultExtras) {
-//
-//            }
-//        };
-//        fusedLocationProviderClient.requestLocationUpdates(request, );
-
         requestLocationPermission();
-
-//        requestBackgroundLocationPermission();
         System.out.println("LocationService()");
-//        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-//            @Override
-//            public void onSuccess(Location location) {
-//                if(location != null) {
-//                    System.out.println("Speed: " + location.getSpeed());
-//                    System.out.println("Location: " + location.getLatitude() + "," + location.getLongitude());
-//                } else {
-//                    System.out.println("Location null");
-//                }
-//            }
-//        });
 
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
@@ -114,17 +90,9 @@ public class LocationService implements LocationListener {
                 Consumer<Location> consumer = new Consumer<Location>() {
                     @Override
                     public void accept(Location location) {
-                        if(location != null) {
-                            System.out.println("Speed: " + location.getSpeed());
-                            System.out.println("Position: " + location.getLatitude() + ", " + location.getLongitude());
-                        } else {
-                            System.out.println("Location null");
-                        }
+                        printLocation(location);
                     }
-
-
                 };
-
                 getLocation(consumer);
             }
         };
@@ -133,8 +101,6 @@ public class LocationService implements LocationListener {
         locationTimer.scheduleAtFixedRate(locationTimerTask, 0, 1000);
 
 
-
-//        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
     }
 
     /**
@@ -144,6 +110,15 @@ public class LocationService implements LocationListener {
      */
     private double convertPace(double pace) {
         return 26.332 / pace;
+    }
+
+    private void printLocation(Location location) {
+        if(location != null) {
+            System.out.println("Speed: " + location.getSpeed());
+            System.out.println("Position: " + location.getLatitude() + ", " + location.getLongitude());
+        } else {
+            System.out.println("Location null");
+        }
     }
 
     @Override
