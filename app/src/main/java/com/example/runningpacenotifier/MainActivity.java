@@ -27,14 +27,14 @@ public class MainActivity extends Activity {
     private TextView currentPaceView;
     private TextView targetPaceView;
     private ActivityMainBinding binding;
+    private Button addButton;
+    private Button subButton;
 
     private ScrollView scrollView;
 
     private TimerTask timeChangeTask;
     private Timer timeChangeTimer;
 
-    private Button addButton;
-    private Button subButton;
 
     private int MIN_TARGET_SIZE = 20;
     private int MAX_TARGET_SIZE = 90;
@@ -62,6 +62,8 @@ public class MainActivity extends Activity {
         timeView = binding.timeOfDay;
         currentPaceView = binding.currentPace;
         targetPaceView = binding.targetPace;
+        addButton = binding.addTime;
+        subButton = binding.subTime;
 
         scrollView = binding.scrollView;
 
@@ -77,12 +79,14 @@ public class MainActivity extends Activity {
         addButton.setOnClickListener(new View.OnClickListener() {
            public void onClick(View v) {
                 String newTime = addTime((String) binding.targetPace.getText());
+                targetPaceView.setText(newTime);
            }
         });
 
         subButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String newTime = subTime((String) binding.targetPace.getText());
+                targetPaceView.setText(newTime);
             }
         });
 
